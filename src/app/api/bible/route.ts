@@ -22,39 +22,44 @@ const LIVRO_MAPA: Record<string, string> = {
 
 const ORDEM_LIVROS = Object.keys(LIVRO_MAPA);
 
-function normalizarLivro(livro: string): string {
-  return livro.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
+function normalizar(str: string): string {
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
 }
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const referencia = searchParams.get("versiculo");
-
-  if (!referencia) {
-    return NextResponse.json({ erro: "Parâmetro 'versiculo' obrigatório." }, { status: 400 });
-  }
-
-  const match = referencia.match(/^(.+?)\s+(\d+):(\d+)$/i);
-  if (!match) {
-    return NextResponse.json({ erro: "Formato inválido. Use 'Livro Capítulo:Versículo'" }, { status: 400 });
-  }
-
-  const [, livro, cap, vers] = match;
-  const livroKey = normalizarLivro(livro);
-  const livroId = LIVRO_MAPA[livroKey];
-
-  if (!livroId) {
-    return NextResponse.json({ erro: "Livro não reconhecido." }, { status: 404 });
-  }
-
-  const token = process.env.ABIBLIA_TOKEN;
-  if (!token) {
-    return NextResponse.json({ erro: "Token da Bíblia Digital não configurado." }, { status: 500 });
-  }
-
-  let response;
   try {
-    response = await fetch(`https://www.abibliadigital.com.br/api/verses/nvi/${livroId}/${cap}/${vers}`, {
+    const { searchParams } = new URL(request.url);
+    const referencia = searchParams.get("versiculo");
+
+    if (!referencia) {
+      return NextResponse.json({ erro: "Parâmetro 'versiculo' obrigatório." }, { status: 400 });
+    }
+
+    const match = referencia.match(/^(.+?)\s+(\d+):(\d+)$/i);
+    if (!match) {
+      return NextResponse.json({ erro: "Formato inválido. Use 'Livro Capítulo:Versículo'" }, { status: 400 });
+    }
+
+    const [, livro, cap, vers] = match;
+    const livroKey = normalizar(livro);
+    const livroId = LIVRO_MAPA[livroKey];
+
+    if (!livroId) {
+      return NextResponse.json({ erro: `Livro '${livro}' não reconhecido.` }, { status: 404 });
+    }
+
+    const token = process.env.ABIBLIA_TOKEN;
+    if (!token) {
+      return NextResponse.json({ erro: "Token da Bíblia Digital não configurado." }, { status: 500 });
+    }
+
+    const url = `https://www.abibliadigital.com.br/api/verses/nvi/${livroId}/${cap}/${vers}`;
+    const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json; charset=utf-8"
@@ -62,7 +67,7 @@ export async function GET(request: Request) {
     });
 
     if (!response.ok) {
-      // Verifica se é fim do livro e tenta o próximo
+      // Tenta pegar o próximo livro
       if (response.status === 404) {
         const indexAtual = ORDEM_LIVROS.indexOf(livroKey);
         if (indexAtual !== -1 && indexAtual + 1 < ORDEM_LIVROS.length) {
@@ -99,9 +104,8 @@ export async function GET(request: Request) {
       numero_versiculo: data.number,
       versiculo: data.text
     });
-
-  } catch (e) {
-    console.error("Erro ao acessar API externa", e);
+  } catch (e: any) {
+    console.error("Erro ao consultar API externa:", e?.message ?? e);
     return NextResponse.json({ erro: "Erro ao consultar API externa." }, { status: 500 });
   }
 }

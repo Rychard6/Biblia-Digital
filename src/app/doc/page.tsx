@@ -63,7 +63,7 @@ export default function Doc() {
               <p className="font-semibold">Exemplo</p>
               <p>Digite <code>João 3:16</code> e pressione Enter. O sistema exibirá o versículo:</p>
               <blockquote className="mt-2 border-l-4 border-primary pl-4 italic">
-                "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito..."
+                &quot;Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito...&quot;
               </blockquote>
             </div>
           </div>
