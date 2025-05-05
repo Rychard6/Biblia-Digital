@@ -26,6 +26,7 @@ const LIVROS = [
 ];
 
 export default function Navbar() {
+  const [imageSrc, setImageSrc] = useState("/logo.png");
   const [darkMode, setDarkMode] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [query, setQuery] = useState("");
@@ -93,12 +94,13 @@ export default function Navbar() {
       <div suppressHydrationWarning>
         <Link href="/" className="flex items-center">
           <Image
-            src="/logo.png"
+            src={imageSrc}
             alt="Logo"
             width={50}
             height={50}
             priority
             className="object-contain"
+            onError={() => setImageSrc("https://drive.google.com/uc?id=1xKnU2lMaQEwH_liYa1IIbKbbRvFsIYqK")} // Fallback para a imagem do Google Drive
           />
         </Link>
       </div>
