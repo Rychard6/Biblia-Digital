@@ -3,7 +3,10 @@
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { Sun, Moon, Link } from "lucide-react";
+import { Sun, Moon} from "lucide-react";
+import Link from "next/link";
+
+
 
 const LIVROS = [
   "Gênesis", "Êxodo", "Levítico", "Números", "Deuteronômio",
@@ -28,6 +31,13 @@ export default function Navbar() {
   const [query, setQuery] = useState("");
   const pathname = usePathname();
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    setDarkMode(isDarkMode);
+  }, []);
   
 
   useEffect(() => {
@@ -78,9 +88,9 @@ export default function Navbar() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between h-16 px-8 bg-background/80 backdrop-blur-md">
+    <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between h-16 px-8 bg-background/80 backdrop-blur-md cursor-pointer">
       {/* Logo */}
-      <div>
+      <div suppressHydrationWarning>
         <Link href="/" className="flex items-center">
           <Image
             src="/logo.png"
@@ -123,13 +133,15 @@ export default function Navbar() {
       
 
       {/* Botão Dark Mode */}
-      <button
-        onClick={toggleDarkMode}
-        className="p-2 rounded-full hover:bg-muted transition cursor-pointer"
-        aria-label="Toggle Dark Mode"
-      >
-        {darkMode ? <Sun size={25} /> : <Moon size={25} />}
-      </button>
+      {mounted && (
+  <button
+      onClick={toggleDarkMode}
+      className="p-2 rounded-full hover:bg-muted transition cursor-pointer"
+      aria-label="Toggle Dark Mode"
+    >
+      {darkMode ? <Sun size={25} /> : <Moon size={25} />}
+    </button>
+  )}
     </header>
   );
 }
