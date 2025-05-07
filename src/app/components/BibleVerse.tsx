@@ -53,7 +53,7 @@ export default function BibleVerse({ search }: BibleVerseProps) {
       if (!response.ok) {
         throw new Error("Erro ao buscar o versículo.");
       }
-      const data: VerseData = await response.json(); 
+      const data: VerseData = await response.json();
       setVerseData(data);
     } catch (err: unknown) {
       setError((err as Error).message || "Erro desconhecido.");
@@ -154,21 +154,21 @@ export default function BibleVerse({ search }: BibleVerseProps) {
   if (!verseData) return null;
 
   return (
-    <div className="flex flex-col items-center justify-center w-3/5 h-96 bg-background/80 backdrop-blur-md p-4 rounded-lg shadow-lg">
-      <p className=" font-bold text-center mb-6 text-4xl">{verseData.versiculo}</p>
-      <p className="font-medium text-lg">
+    <div className="flex flex-col items-center justify-center w-full max-w-3xl h-auto sm:h-96 bg-background/80 backdrop-blur-md p-4 rounded-lg shadow-lg">
+      <p className="font-bold text-center mb-6 text-2xl sm:text-4xl">{verseData.versiculo}</p>
+      <p className="font-medium text-base sm:text-lg">
         {verseData.livro || ""} {verseData.capitulo}:{verseData.numero_versiculo}
       </p>
 
-      <div className="flex gap-4 mt-6">
+      <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full justify-center">
         <button
-          className="px-6 py-2 bg-gray-200 text-gray-900 font-semibold rounded-lg shadow-md hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-600 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600 transition-all duration-300"
+          className="w-full sm:w-auto px-6 py-2 bg-gray-200 text-gray-900 font-semibold rounded-lg shadow-md hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-600 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600 transition-all duration-300"
           onClick={() => handlePreviousVerse()}
         >
           Anterior
         </button>
         <button
-          className="px-6 py-2 bg-gray-200 text-gray-900 font-semibold rounded-lg shadow-md hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-600 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600 transition-all duration-300"
+          className="w-full sm:w-auto px-6 py-2 bg-gray-200 text-gray-900 font-semibold rounded-lg shadow-md hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-600 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600 transition-all duration-300"
           onClick={() => handleNextVerse()}
         >
           Próximo

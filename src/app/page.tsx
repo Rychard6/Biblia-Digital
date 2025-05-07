@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { bibleBooks } from "../app/components/bibleBooks";
-import Doc from "./doc/page";
 
 export default function Home() {
   const [input, setInput] = useState("");
@@ -54,6 +53,10 @@ export default function Home() {
                   key={idx}
                   onClick={() => handleSuggestionClick(suggestion)}
                   className="p-2 hover:bg-gray-100 cursor-pointer"
+                  style={{
+                    backgroundColor: "var(--background)", // Fundo do botão
+                    color: "var(--foreground)", // Cor do texto
+                  }}
                 >
                   {suggestion}
                 </li>
@@ -62,7 +65,11 @@ export default function Home() {
           )}
           <button
             type="submit"
-            className="px-10 py-1.5 rounded-md bg-gradient-to-r hover:from-orange-500 hover:to-red-600 transition-all duration-300 shadow-lg"
+            className="px-10 py-1.5 rounded-md transition-all duration-300 shadow-lg"
+            style={{
+              backgroundColor: "var(--foreground)", // Fundo do botão
+              color: "var(--background)", // Cor do texto
+            }}
           >
             Buscar
           </button>
